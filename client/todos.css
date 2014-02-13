@@ -227,6 +227,12 @@ h3 {
     color: #999;
 }
 
+#item-list .todo .noteactions {
+	visibility: hidden;
+}
+#item-list .todo:hover .noteactions {
+	visibility: visible;
+}
 #item-list .todo:hover .destroy {
     background: url('/destroy.png') no-repeat 0 0;
 }

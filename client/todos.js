@@ -228,14 +228,14 @@ Template.todo_item.events({
     activateInput(tmpl.find("#edittag-input"));
   },
 
-  'click .editnote': function (evt, tmpl) {
+  'click .editnote, click .editnote-link': function (evt, tmpl) {
     console.log('editing note for todo ' + this._id);
     if (!this.note) this.note = 'enter note here.';
     Session.set('editing_itemnote', this._id);
     Deps.flush(); // update DOM before focus
     activateInput(tmpl.find("#todo-note-input"));
   },
-  'click .removenote': function(evt, tmpl) {
+  'click .removenote-link': function(evt, tmpl) {
 	  console.log('removing note!');
 	  Todos.update(this._id, {$unset: {note: 1}});
 	  Session.set('editing_itemnote', null);
