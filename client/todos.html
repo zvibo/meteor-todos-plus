@@ -64,7 +64,7 @@
 </template>
 
 <template name="todo_item">
-  <li class="todo {{done_class}}">
+  <li class="todo {{done_class}} {{note_class}}">
     {{#if editing}}
       <div class="edit">
         <input id="todo-input" type="text" value="{{text}}" />
@@ -73,7 +73,7 @@
       <div class="destroy"></div>
       <div class="display">
         <input class="check" name="markdone" type="checkbox" {{{done_checkbox}}} />
-        <div class="todo-text">{{text}}</div>
+        <div class="todo-text">{{text}}{{#if editing_note}}&nbsp;&nbsp;&nbsp;&nbsp;<em>"tab" to save note</em>{{/if}}</div>
       </div>
     {{/if}}
     <div class="item-tags">
@@ -92,6 +92,16 @@
           +tag
         </div>
       {{/if}}
+    </div>
+    <div class="editnote"></div>
+    <div class="item-note {{note_class}}">
+        {{#if editing_note}}
+            <textarea id="todo-note-input" cols="120" wrap="off">{{note}}</textarea>
+        {{else}}
+            {{#if note}}<pre>{{note}}
+
+    [ <a href="#" class="removenote">remove note</a> ]</pre>{{/if}}
+        {{/if}}
     </div>
   </li>
 </template>

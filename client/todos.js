@@ -19,6 +19,9 @@ Session.setDefault('editing_listname', null);
 // When editing todo text, ID of the todo
 Session.setDefault('editing_itemname', null);
 
+// When editing todo note text, ID of the todo
+Session.setDefault('editing_itemnote', null);
+
 // Subscribe to 'lists' collection on startup.
 // Select a list once data has arrived.
 var listsHandle = Meteor.subscribe('lists', function () {
@@ -48,6 +51,7 @@ Deps.autorun(function () {
 var okCancelEvents = function (selector, callbacks) {
   var ok = callbacks.ok || function () {};
   var cancel = callbacks.cancel || function () {};
+  var ignore_return = !!(callbacks.ignore_return || false)
 
   var events = {};
   events['keyup '+selector+', keydown '+selector+', focusout '+selector] =
@@ -56,7 +60,7 @@ var okCancelEvents = function (selector, callbacks) {
         // escape = cancel
         cancel.call(this, evt);
 
-      } else if (evt.type === "keyup" && evt.which === 13 ||
+      } else if (  (evt.type === "keyup" && evt.which === 13 && !ignore_return) ||
                  evt.type === "focusout") {
         // blur/return/enter = ok/submit if non-empty
         var value = String(evt.target.value || "");
@@ -196,9 +200,18 @@ Template.todo_item.editing = function () {
   return Session.equals('editing_itemname', this._id);
 };
 
+Template.todo_item.editing_note = function() {
+  return Session.equals('editing_itemnote', this._id);
+};
+
 Template.todo_item.adding_tag = function () {
   return Session.equals('editing_addtag', this._id);
 };
+
+Template.todo_item.note_class = function() {
+	return this.note ? 'note' : '';
+};
+
 
 Template.todo_item.events({
   'click .check': function () {
@@ -215,6 +228,19 @@ Template.todo_item.events({
     activateInput(tmpl.find("#edittag-input"));
   },
 
+  'click .editnote': function (evt, tmpl) {
+    console.log('editing note for todo ' + this._id);
+    if (!this.note) this.note = 'enter note here.';
+    Session.set('editing_itemnote', this._id);
+    Deps.flush(); // update DOM before focus
+    activateInput(tmpl.find("#todo-note-input"));
+  },
+  'click .removenote': function(evt, tmpl) {
+	  console.log('removing note!');
+	  Todos.update(this._id, {$unset: {note: 1}});
+	  Session.set('editing_itemnote', null);
+	  Deps.flush();
+  },
   'dblclick .display .todo-text': function (evt, tmpl) {
     Session.set('editing_itemname', this._id);
     Deps.flush(); // update DOM before focus
@@ -232,6 +258,19 @@ Template.todo_item.events({
     }, 300);
   }
 });
+
+Template.todo_item.events(okCancelEvents(
+  '#todo-note-input',
+  {
+    ok: function(value) {
+      Todos.update(this._id, {$set: {note: value}});
+      Session.set('editing_itemnote', null);
+    },
+    cancel: function() {
+      Session.set('editing_itemnote', null);
+    },
+    ignore_return: true
+  }));
 
 Template.todo_item.events(okCancelEvents(
   '#todo-input',

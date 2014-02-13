@@ -172,6 +172,32 @@ h3 {
     border-top: 1px solid #ccc;
 }
 
+#item-list .todo.note {
+	height: 150px;
+}
+#item-list .todo .item-note {
+	width: 80%;
+}
+#item-list .todo #todo-note-input, #item-list .todo .item-note pre {
+	height: 80px;
+	width: 100%;
+	float: left;
+	border: 1px solid #eee;
+	font-family: monospace;
+	font-size: 10px;
+	margin: 0;
+	padding: 0px;
+}
+#item-list .todo .item-note.note pre, #item-list .todo .item-note.note #todo-note-input {
+	width: 100%;
+}
+#item-list .todo .item-note.note {
+	display: block;
+	position: absolute;
+	top: 50px;
+	left: 50px;
+}
+
 #item-list .todo .destroy {
     cursor: pointer;
     position: absolute;
@@ -208,6 +234,26 @@ h3 {
 #item-list .todo .destroy:hover {
     background-position: 0 -20px;
 }
+
+
+/* editnote button */
+
+#item-list .todo .editnote {
+    cursor: pointer;
+	float: left;
+	margin-top: 15px;
+	margin-left: 15px;
+    height: 20px;
+    width: 20px;
+}
+
+#item-list .todo:hover .editnote {
+	background: url('/note.png') no-repeat 0 0;
+}
+#item-list .todo .editnote:hover {
+	background-position: 0 -20px;
+}
+
 
 #item-list .todo .item-tags {
     overflow: auto;
